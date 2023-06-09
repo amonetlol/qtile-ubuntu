@@ -1,0 +1,5 @@
+alacritty picom rofi thunar thunar-archive-plugin thunar-volman pavucontrol nitrogen lxappearance
+
+Opcionais:
+flameshot
+playerctl

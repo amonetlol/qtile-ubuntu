@@ -1,0 +1,48 @@
+python3-virtualenv-clone python3-dbus python3-pip 
+
+python3-virtualenv
+OR
+python3-venv
+
+#set python env
+https://fostips.com/pip-install-error-ubuntu-2304/#rb-Option-3-Create-Virtual-Environment
+https://www.reddit.com/r/voidlinux/comments/weiy19/how_to_get_qtile_working_on_voidlinux/
+https://vpsie.com/knowledge-base/how-to-install-qtile-on-ubuntu-20-04-lts/
+
+mkdir ~/qtile
+
+python3 -m venv ~/qtile
+OR
+python3 -m virtualenv ~/qtile
+
+source ~/qtile/bin/activate
+deactivate
+
+pip install xcffib==1.3.0
+
+pip install --no-cache --upgrade --no-build-isolation cairocffi
+OR
+pip install --no-cache-dir cairocffi
+
+pip install --no-use-pep517 --no-build-isolation qtile
+
+pip install dbus-next
+pip install pyxdg
+
+#######Fix:
+sudo virtualenv-clone ~/qtile /opt/qtile
+sudo chown -R <username> /opt/qtile
+mkdir ~/.local/bin
+ln -s /opt/qtile/bin/qtile ~/.local/bin/qtile
+
+vim .bashrc
+export PATH="$HOME/.local/bin:$PATH"
+
+/usr/share/xsessions/qtile.desktop
+[Desktop Entry]
+Name=Qtile
+Comment=Qtile Session
+Exec=/opt/qtile/bin/qtile start
+Type=Application
+X-GDM-SessionRegisters=true
+Keywords=wm;tiling
