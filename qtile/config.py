@@ -10,6 +10,8 @@ from qtile_extras import widget
 
 mod = "mod4"
 terminal = "alacritty"
+browser = "firefox"
+fileManager = "thunar"
 
 ## Keybindings - Custom keybindings are below defaults
 keys = [
@@ -31,33 +33,37 @@ keys = [
     Key([mod, "shift"], "j", lazy.layout.shuffle_down()),
     Key([mod, "shift"], "k", lazy.layout.shuffle_up()),
 
-    # Grow windows. If current window is on the edge of screen and direction
-    # will be to screen edge - window would shrink.
+    #### Grow windows. ####
+    # MonadTall
+    Key([mod], "Up", lazy.layout.grow()),
+    Key([mod], "Down", lazy.layout.shrink()),
+    # reset position
+    Key([mod], "n", lazy.layout.reset()),
+    
+    # Columns
     Key([mod, "control"], "h", lazy.layout.grow_left()),
     Key([mod, "control"], "l", lazy.layout.grow_right()),
     Key([mod, "control"], "j", lazy.layout.grow_down()),
     Key([mod, "control"], "k", lazy.layout.grow_up()),
-    Key([mod], "n", lazy.layout.normalize()),
+    # reset position
+    Key([mod, "control"], "n", lazy.layout.normalize()),
     
-    # Toggle between split and unsplit sides of stack.
-    # Split = all windows displayed
-    # Unsplit = 1 window displayed, like Max layout, but still with
-    # multiple stack panes
-    Key([mod, "shift"], "Return", lazy.layout.toggle_split()),
+    Key([mod], "m", lazy.layout.maximize(), desc='toggle window between minimum and maximum sizes'),
+    Key([mod, "shift"], "f", lazy.window.toggle_floating(), desc='toggle floating'),
+    Key([mod], "f", lazy.window.toggle_fullscreen(), desc='toggle fullscreen'),
 
     # Toggle between different layouts as defined below
     Key([mod], "Tab", lazy.next_layout()),
-    Key([mod], "w", lazy.window.kill()),
+    Key([mod], "q", lazy.window.kill()),
     Key([mod, "control"], "r", lazy.reload_config()),
     Key([mod, "control"], "q", lazy.shutdown()),
 
-    ## CUSTOM
-    # Spawn apps
+    # Apps
     Key([mod], "Return", lazy.spawn(terminal)),
-    Key([mod], "e", lazy.spawn("Thunar")),
+    Key([mod], "e", lazy.spawn(fileManager)),
     # Run "rofi-theme-selector" in terminal to select a theme
-    Key([mod], "s", lazy.spawn("rofi -show drun -show-icons")),
-    Key([mod], "f", lazy.spawn("firefox")),
+    Key([mod], "r", lazy.spawn("rofi -show drun -show-icons")),
+    Key([mod], "b", lazy.spawn(browser)),
     Key([mod], "g", lazy.spawn("pavucontrol")),
 
     # Screenshot
@@ -117,19 +123,11 @@ colors = {
 # also open discord and spotify only on the second group. 
 # I added layouts to second group to change order in which they are there
 groups = [
-    Group("1", label="1", layout='columns'),
-    Group("2", label="2",
-     layouts = [layout.Columns(
-        border_focus = colors["red"],
-        border_normal = colors["base"],
-        border_on_single =False,
-        fair = True,
-     ), layout.Max()],
-     matches=[Match(wm_class = "discord-canary"),
-              Match(wm_class = "Spotify")]),
-    Group("3", label = "3"),
-    Group("4", label = "4"),
-    Group("5", label = "5"),
+    Group("1", label = "1", layout='monadtall'),
+    Group("2", label = "2", layout='monadtall'),
+    Group("3", label = "3", layout='monadtall'),
+    Group("4", label = "4", layout='monadtall'),
+    Group("5", label = "5", layout='floating'),
 ]
 
 # Magic behind groups
@@ -144,6 +142,22 @@ for i in groups:
 
 ## Layouts - Max as main, floating as layout not floating rules to windows
 layouts = [
+    layout.MonadTall(
+		align=0,
+		border_focus = colors["red"],
+        border_normal = colors["base"],
+		border_width=3,
+		change_ratio=0.05,
+		change_size=20,
+		margin=8,
+		max_ratio=0.75,
+		min_ratio=0.25,
+		min_secondary_size=85,
+		new_client_position='after_current',
+		ratio=0.5,
+		single_border_width=None,
+		single_margin=None
+    ),
     layout.Max(),
     layout.Columns(
         border_focus = colors["red"],
